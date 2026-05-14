@@ -1,0 +1,16 @@
+{
+	"name": "ftr-financy",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"backend"
+	],
+	"scripts": {
+		"format": "biome format --write .",
+		"check": "biome check .",
+		"lint": "biome lint ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.15"
+	}
+}
