@@ -1,13 +1,16 @@
+import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
 import express from "express";
 import { buildSchema } from "type-graphql";
+import { AuthResolver } from "./resolvers/auth.resolver";
+import { UserResolver } from "./resolvers/user.resolver";
 
 async function bootstrap() {
 	const app = express();
 
 	const schema = await buildSchema({
-		resolvers: [],
+		resolvers: [AuthResolver, UserResolver],
 		validate: false,
 		emitSchemaFile: "./schema.graphql",
 	});
