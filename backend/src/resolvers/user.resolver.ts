@@ -1,23 +1,26 @@
 import { Arg, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
-import { CreateUserInput } from "../dtos/input/user.input";
-import { IsAuth } from "../middlewares/auth.middleware";
-import { UserModel } from "../models/user.model";
-import { UserService } from "../services/user.service";
+import { UpdateUserInput } from "../dtos/input/user.input.js";
+import { GqlUser } from "../graphql/decorators/user.decorator.js";
+import { IsAuth } from "../middlewares/auth.middleware.js";
+import { UserModel } from "../models/user.model.js";
+import { UserService } from "../services/user.service.js";
 
-@Resolver(() => UserModel)
-@UseMiddleware(IsAuth)
+@Resolver()
 export class UserResolver {
 	private userService = new UserService();
 
-	@Mutation(() => UserModel)
-	async createUser(
-		@Arg("data", () => CreateUserInput) data: CreateUserInput,
-	): Promise<UserModel> {
-		return this.userService.createUser(data);
+	@Query(() => UserModel)
+	@UseMiddleware(IsAuth)
+	async getProfile(@GqlUser() user: UserModel): Promise<UserModel> {
+		return this.userService.getProfile(user.id);
 	}
 
-	@Query(() => UserModel)
-	async getUser(@Arg("id", () => String) id: string): Promise<UserModel> {
-		return this.userService.findUser(id);
+	@Mutation(() => UserModel)
+	@UseMiddleware(IsAuth)
+	async updateProfile(
+		@Arg("data", () => UpdateUserInput) data: UpdateUserInput,
+		@GqlUser() user: UserModel,
+	): Promise<UserModel> {
+		return this.userService.updateProfile(user.id, data);
 	}
 }

@@ -3,6 +3,28 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type CategoryModel {
+  color: String
+  createdAt: DateTimeISO!
+  id: ID!
+  name: String!
+  updatedAt: DateTimeISO!
+  userId: String!
+}
+
+input CreateCategoryInput {
+  color: String
+  name: String!
+}
+
+input CreateTransactionInput {
+  amount: Float!
+  categoryId: String
+  date: DateTimeISO!
+  title: String!
+  type: TransactionType!
+}
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
 """
@@ -20,12 +42,31 @@ type LoginOutput {
 }
 
 type Mutation {
+  createCategory(data: CreateCategoryInput!): CategoryModel!
+  createTransaction(data: CreateTransactionInput!): TransactionModel!
+  deleteCategory(id: String!): Boolean!
+  deleteTransaction(id: String!): Boolean!
   login(data: LoginInput!): LoginOutput!
   register(data: RegisterInput!): RegisterOutput!
+  updateCategory(data: UpdateCategoryInput!, id: String!): CategoryModel!
+  updateProfile(data: UpdateUserInput!): UserModel!
+  updateTransaction(data: UpdateTransactionInput!, id: String!): TransactionModel!
+}
+
+type PaginatedTransactionsOutput {
+  limit: Int!
+  page: Int!
+  total: Int!
+  totalPages: Int!
+  transactions: [TransactionModel!]!
 }
 
 type Query {
-  getUser(id: String!): UserModel!
+  getCategory(id: String!): CategoryModel!
+  getProfile: UserModel!
+  getTransaction(id: String!): TransactionModel!
+  listCategories: [CategoryModel!]!
+  listTransactions(filters: TransactionFilterInput): PaginatedTransactionsOutput!
 }
 
 input RegisterInput {
@@ -38,6 +79,52 @@ type RegisterOutput {
   refreshToken: String!
   token: String!
   user: UserModel!
+}
+
+input TransactionFilterInput {
+  categoryId: String
+  limit: Int = 10
+  month: Int
+  page: Int = 1
+  search: String
+  type: TransactionType
+  year: Int
+}
+
+type TransactionModel {
+  amount: Float!
+  category: CategoryModel
+  categoryId: String
+  createdAt: DateTimeISO!
+  date: DateTimeISO!
+  id: ID!
+  title: String!
+  type: TransactionType!
+  updatedAt: DateTimeISO!
+  userId: String!
+}
+
+"""Type of transaction"""
+enum TransactionType {
+  expense
+  income
+}
+
+input UpdateCategoryInput {
+  color: String
+  name: String
+}
+
+input UpdateTransactionInput {
+  amount: Float
+  categoryId: String
+  date: DateTimeISO
+  title: String
+  type: TransactionType
+}
+
+input UpdateUserInput {
+  name: String
 }
 
 type UserModel {
