@@ -1,18 +1,18 @@
 import { Field, GraphQLISODateTime, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
-export class UserModel {
+export class CategoryModel {
 	@Field(() => ID)
 	id!: string;
 
 	@Field(() => String)
 	name!: string;
 
-	@Field(() => String)
-	email!: string;
-
 	@Field(() => String, { nullable: true })
-	password?: string;
+	color?: string;
+
+	@Field(() => String)
+	userId!: string;
 
 	@Field(() => GraphQLISODateTime)
 	createdAt!: Date;
